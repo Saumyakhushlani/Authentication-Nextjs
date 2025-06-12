@@ -1,24 +1,47 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const page = () => {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
     username: ""
   })
+  const [buttonDisabled, setbuttonDisabled] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
+      setbuttonDisabled(false)
+    }
+    else {
+      setbuttonDisabled(true)
+    }
+  }, [user]);
 
   const onSignup = async () => {
-    console.log(user)
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", user)
+      console.log("SignUp succesful ",response.data)
+      router.push(" /login")
+    } catch (error) {
+      console.log("Signup Failed! Error:", error.message)
+      toast.error(error.message);
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen py-2'>
-      <h1 className='text-4xl mb-4 font-semibold'>SignUp</h1>
+      <h1 className='text-4xl mb-4 font-semibold'>{loading ? "Processing" : "Signup"}</h1>
 
       <label htmlFor="username">Username</label>
       <input
@@ -50,7 +73,7 @@ const page = () => {
         placeholder='Password'
       />
 
-      <button className='bg-blue-600 p-2 my-2 rounded-2xl px-10 hover:cursor-pointer hover:bg-blue-450' onClick={onSignup}>Submit</button>
+      <button className='bg-blue-600 p-2 my-2 rounded-2xl px-10 hover:cursor-pointer hover:bg-blue-450' onClick={onSignup}>{buttonDisabled ? "Fill Details" : "Sign Up"}</button>
       <Link href='/login'>Redirect to Login page</Link>
     </div>
   )
