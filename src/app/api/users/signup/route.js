@@ -37,7 +37,7 @@ export async function POST(req) {
             email,
             password: hashedPassword
         })
-
+        
         const savedUser = await newUser.save()
         console.log("User created:", savedUser._id);
         

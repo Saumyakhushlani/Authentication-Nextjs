@@ -27,6 +27,7 @@ const page = () => {
 
   const onSignup = async () => {
     try {
+      
       setLoading(true);
       const response = await axios.post("/api/users/signup", user)
       console.log("SignUp succesful ",response.data)
