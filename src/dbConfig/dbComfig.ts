@@ -17,5 +17,6 @@ export async function dbConnect (){
     } catch (error) {
         console.log("DB not connected. Error :",error);
         process.exit(1);
+        
     }
 }
